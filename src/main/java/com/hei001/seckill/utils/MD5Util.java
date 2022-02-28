@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * @date 2022/2/28 12:44
  */
 @Component
-public class MD5Utils {
+public class MD5Util {
     public static String md5(String src){
         return DigestUtils.md5Hex(src);
     }
