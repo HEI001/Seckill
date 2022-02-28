@@ -14,6 +14,7 @@ import com.hei001.seckill.vo.RespBean;
 import com.hei001.seckill.vo.RespBeanEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,9 @@ import javax.servlet.http.HttpServletResponse;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
     /**
      * 登录
      * @param loginVo
@@ -60,8 +64,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         //生成 cookie
         String ticket = UUIDUtil.uuid();
-        request.getSession().setAttribute(ticket,user);
+        //不放如session中，放入redis中
+        //专门操作String类型
+        redisTemplate.opsForValue().set("user"+ticket,user);
+        //request.getSession().setAttribute(ticket,user);
         CookieUtil.addCookie(response,"userTicket",ticket);
         return RespBean.success();
+    }
+
+    /**
+     * 根据cookie获取用户
+     * @param userTicket
+     * @return
+     */
+    @Override
+    public User getUserByCookie(HttpServletResponse response,String userTicket) {
+        //返回之前判断是否为空
+        if (StringUtils.isEmpty(userTicket)){
+            return null;
+        }
+        User user = (User) redisTemplate.opsForValue().get("user" + userTicket);
+        CookieUtil.addCookie(response,"userTicket",userTicket);
+        return user;
     }
 }

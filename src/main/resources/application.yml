@@ -44,7 +44,25 @@ spring:
       pool-prepared-statements: true
       # 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100，默认值为-1
       max-open-prepared-statements: 20
-
+  redis:
+    # 服务器地址
+    host: 120.24.174.214
+    # 端口
+    port: 6379
+    # 数据库
+    database: 0
+    # 超时时间
+    timeout: 10000ms
+    lettuce:
+      pool:
+        # 最大连接数
+        max-active: 8
+        # 最大连接阻塞等待时间，默认-1
+        max-wait: 10000ms
+        # 最大空闲连接 默认8
+        max-idle: 200
+        # 最小空闲连接，默认0
+        min-idle: 5
 # Mybatis-plus配置
 mybatis-plus:
   # 配置Mapper.xml映射文件
