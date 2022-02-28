@@ -6,8 +6,13 @@ import com.hei001.seckill.vo.RespBean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * @author HEI001
@@ -36,10 +41,10 @@ public class LoginController {
      */
     @RequestMapping("/doLogin")
     @ResponseBody
-    public RespBean doLogin(LoginVo loginVo){
+    public RespBean doLogin(HttpServletRequest request,HttpServletResponse response, @Valid LoginVo loginVo){
 
         log.info("{}",loginVo);
-        return userService.doLogin(loginVo);
+        return userService.doLogin(request,response,loginVo);
 
     }
 }
