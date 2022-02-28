@@ -1,0 +1,62 @@
+spring:
+  # thymeleaf配置
+  thymeleaf:
+    # 关闭缓存
+    cache: false
+    servlet:
+      content-type: text/html
+    enabled: true
+    encoding: UTF-8
+    mode: HTML5
+    prefix: classpath:/templates/
+    suffix: .html
+  # 数据库配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 配置监控统计拦截的filters，去掉后监控界面sql将无法统计
+      filters: stat
+      # 最大活跃数
+      max-active: 1000
+      # 数据库连接池初始化连接数
+      initial-size: 100
+      # 获取数据库连接的最长等待时间（毫秒），如果超过此时间还没有获取连接，则抛出异常，设置为-1，则表示获取不到连接，无限等待
+      max-wait: 60000
+      # 数据库连接池中最小连接数，如果长时间不使用，连接池中也应保持最小连接个数
+      min-idle: 500
+      # 两个含义 1、Destroy 线程会检测连接间隔时间  2、test-While-idle 的判断依据，
+      time-between-eviction-runs-millis: 60000
+      # Destroy 线程中如果检测到当前连接的最后活跃时间和当前时间的差值大于minEvictableIdleTimeMillis,则关闭当前链接
+      min-evictable-idle-time-millis: 300000
+      # 一个查询语句，后面的一些属性会依赖这个配置，如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会其作用。
+      validation-query: select 1
+      # 申请连接的时候有条件检测链接是否可用，条件：如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      test-while-idle: true
+      # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。默认值为true
+      test-on-borrow: false
+      # 归还连接时执行validationQuery判断连接的有效性，如果这个链接失效则删除，这个配置会降低配置
+      test-on-return: false
+      # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。默认值为false
+      pool-prepared-statements: true
+      # 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100，默认值为-1
+      max-open-prepared-statements: 20
+
+# Mybatis-plus配置
+mybatis-plus:
+  # 配置Mapper.xml映射文件
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  # 配置Mybatis 数据返回类型别名（默认是类名）
+  type-aliases-package: com.hei001.seckill.pojo
+
+# Mybatis SQL打印（方法接口所在的包）
+logging:
+  level:
+    com.hei001.seckill.mapper: debug
+
+
+
+
