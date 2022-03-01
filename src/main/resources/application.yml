@@ -46,7 +46,7 @@ spring:
       max-open-prepared-statements: 20
   redis:
     # 服务器地址
-    host: 120.24.174.214
+    host: 192.168.64.128
     # 端口
     port: 6379
     # 数据库
