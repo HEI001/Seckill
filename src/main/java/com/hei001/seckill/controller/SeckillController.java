@@ -12,6 +12,7 @@ import com.hei001.seckill.vo.RespBean;
 import com.hei001.seckill.vo.RespBeanEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,8 @@ public class SeckillController {
     private IOrderInfoService iOrderInfoService;
     @Autowired
     private IOrderService orderService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @RequestMapping(value = "/doSeckill",method = RequestMethod.POST)
     @ResponseBody
@@ -46,9 +49,10 @@ public class SeckillController {
         }
 
         //判断是否重复抢购
-        OrderInfo one = iOrderInfoService.getOne(new QueryWrapper<OrderInfo>().eq("user_id", user.getId()).eq("goods_id", goodsId));
-        if(one!=null){
-            model.addAttribute("errmsg",RespBeanEnum.REPEATE_ERROR.getMessage());
+       // OrderInfo one = iOrderInfoService.getOne(new QueryWrapper<OrderInfo>().eq("user_id", user.getId()).eq("goods_id", goodsId));
+        Order order1 = (Order) redisTemplate.opsForValue().get("order:" + user.getId() + ":" + goodsVo.getId());
+        if(order1!=null){
+            //model.addAttribute("errmsg",RespBeanEnum.REPEATE_ERROR.getMessage());
             return RespBean.error(RespBeanEnum.REPEATE_ERROR);
         }
         OrderInfo order = orderService.seckill(user, goodsVo);

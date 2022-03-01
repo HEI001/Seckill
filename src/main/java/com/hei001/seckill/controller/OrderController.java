@@ -31,12 +31,10 @@ public class OrderController {
     @RequestMapping("/detail")
     @ResponseBody
     public RespBean detaul(User user, Long orderId) {
-        System.out.println("1111111");
         if (user == null) {
             return RespBean.error(RespBeanEnum.SESSION_ERROR);
         }
         OrderDetailVo detail = orderService.detail(orderId);
-        System.out.println("2222222----");
 
         return RespBean.success(detail);
     }
