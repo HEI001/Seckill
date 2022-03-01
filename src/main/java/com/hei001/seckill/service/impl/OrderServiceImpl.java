@@ -2,6 +2,7 @@ package com.hei001.seckill.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hei001.seckill.exception.GlobalException;
 import com.hei001.seckill.mapper.OrderInfoMapper;
 import com.hei001.seckill.mapper.OrderMapper;
 import com.hei001.seckill.pojo.GoodsSeckill;
@@ -9,8 +10,11 @@ import com.hei001.seckill.pojo.Order;
 import com.hei001.seckill.pojo.OrderInfo;
 import com.hei001.seckill.pojo.User;
 import com.hei001.seckill.service.IGoodsSeckillService;
+import com.hei001.seckill.service.IGoodsService;
 import com.hei001.seckill.service.IOrderService;
 import com.hei001.seckill.vo.GoodsVo;
+import com.hei001.seckill.vo.OrderDetailVo;
+import com.hei001.seckill.vo.RespBeanEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +37,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private OrderInfoMapper orderInfoMapper;
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private IGoodsService goodsService;
 
     /**
      * 秒杀
@@ -68,4 +74,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderMapper.insert(order);
         return orderInfo;
     }
+
+
 }

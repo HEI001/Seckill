@@ -63,6 +63,26 @@ spring:
         max-idle: 200
         # 最小空闲连接，默认0
         min-idle: 5
+
+  #静态资源处理
+  web:
+    #启动默认静态资源处理，默认启用
+    resources:
+      add-mappings: true
+      cache:
+        #缓存相应时间，单位秒
+        cachecontrol:
+          max-age: 36000
+      chain:
+        #资源启动缓存，默认启动
+        cache: true
+        #启用资源链，默认禁用
+        enabled: true
+        #启用压缩资源解析，默认禁用
+        compressed: true
+      static-locations: classpath:/static/
+
+
 # Mybatis-plus配置
 mybatis-plus:
   # 配置Mapper.xml映射文件

@@ -2,6 +2,7 @@ package com.hei001.seckill.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hei001.seckill.pojo.OrderInfo;
+import com.hei001.seckill.vo.OrderDetailVo;
 
 /**
  * <p>
@@ -13,4 +14,10 @@ import com.hei001.seckill.pojo.OrderInfo;
  */
 public interface IOrderInfoService extends IService<OrderInfo> {
 
+    /**
+     * 订单详情
+     * @param orderId
+     * @return
+     */
+    OrderDetailVo detail(Long orderId);
 }

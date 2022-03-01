@@ -4,7 +4,9 @@ package com.hei001.seckill.controller;
 import com.hei001.seckill.pojo.User;
 import com.hei001.seckill.service.IGoodsService;
 import com.hei001.seckill.service.IUserService;
+import com.hei001.seckill.utils.DetailVo;
 import com.hei001.seckill.vo.GoodsVo;
+import com.hei001.seckill.vo.RespBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -84,9 +86,9 @@ public class GoodsController {
     }
 
 
-    @RequestMapping(value = "/toDetail/{goodsId}" ,produces = "text/html;charset=utf-8")
-    public String toDetail(Model model, User user, @PathVariable Long goodsId){
-        model.addAttribute("user",user);
+    @RequestMapping("/detail/{goodsId}" )
+    @ResponseBody
+    public RespBean toDetail(Model model, User user, @PathVariable Long goodsId){
         GoodsVo goodsVo = goodsService.finGoodsVoByGoodsId(goodsId);
         //开始时间
         Date startDate = goodsVo.getStartDate();
@@ -107,12 +109,13 @@ public class GoodsController {
             seckillStatus=1;
             remainSeconds=0;
         }
-        model.addAttribute("remainSeconds",remainSeconds);
-        model.addAttribute("seckillStatus",seckillStatus);
-        System.out.println(seckillStatus);
-        model.addAttribute("goods",goodsVo);
+        DetailVo detailVo = new DetailVo();
+        detailVo.setUser(user);
+        detailVo.setGoodsVo(goodsVo);
+        detailVo.setSecKillStatus(seckillStatus);
+        detailVo.setRemainSeconds(remainSeconds);
+        return RespBean.success(detailVo);
 
-       return "goods_detail";
     }
 
     @RequestMapping(value = "/toDetail2/{goodsId}" ,produces = "text/html;charset=utf-8")

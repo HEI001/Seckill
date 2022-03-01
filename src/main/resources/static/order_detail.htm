@@ -48,11 +48,11 @@
         </tr>
         <tr>
             <td>收货人</td>
-            <td colspan="2">XXX  18812341234</td>
+            <td colspan="2">XXX  18012345678</td>
         </tr>
         <tr>
             <td>收货地址</td>
-            <td colspan="2">北京市昌平区回龙观龙博一区</td>
+            <td colspan="2">广东</td>
         </tr>
     </table>
 </div>
@@ -60,7 +60,7 @@
 </html>
 <script>
     function render(detail){
-        var goods = detail.goods;
+        var goods = detail.goodsVo;
         var order = detail.order;
         $("#goodsName").text(goods.goodsName);
         $("#goodsImg").attr("src", goods.goodsImg);
@@ -88,10 +88,10 @@
                 orderId:orderId
             },
             success:function(data){
-                if(data.code == 0){
-                    render(data.data);
+                if(data.code == 200){
+                    render(data.obj);
                 }else{
-                    layer.msg(data.msg);
+                    layer.msg(data.message);
                 }
             },
             error:function(){

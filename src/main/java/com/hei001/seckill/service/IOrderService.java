@@ -5,6 +5,7 @@ import com.hei001.seckill.pojo.Order;
 import com.hei001.seckill.pojo.OrderInfo;
 import com.hei001.seckill.pojo.User;
 import com.hei001.seckill.vo.GoodsVo;
+import com.hei001.seckill.vo.OrderDetailVo;
 
 /**
  * <p>
@@ -23,4 +24,5 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     OrderInfo seckill(User user, GoodsVo goodsVo);
+
 }
