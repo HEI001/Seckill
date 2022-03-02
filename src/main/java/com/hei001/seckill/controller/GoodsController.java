@@ -71,7 +71,6 @@ public class GoodsController {
         if (!StringUtils.isEmpty(html)){
             return html;
         }
-        System.out.println("------------------------------");
         model.addAttribute("goodsList",goodsService.findGoodsVo());
         model.addAttribute("user",user);
        // return "goods_list";

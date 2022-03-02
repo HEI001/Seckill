@@ -1,6 +1,7 @@
 package com.hei001.seckill.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hei001.seckill.config.AccessLimit;
 import com.hei001.seckill.exception.GlobalException;
 import com.hei001.seckill.pojo.Order;
 import com.hei001.seckill.pojo.OrderInfo;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
@@ -128,13 +130,22 @@ public class SeckillController implements InitializingBean {
         //return null;
     }
 
-
+    /**
+     * 获取秒杀地址
+     * @param user
+     * @param goodsId
+     * @param captcha
+     * @param request
+     * @return
+     */
+    @AccessLimit(second=5,maxCount=5,needLogin=true)
     @RequestMapping(value = "/path",method = RequestMethod.GET)
     @ResponseBody
-    public RespBean getPath(User user,Long goodsId,String captcha){
+    public RespBean getPath(User user, Long goodsId, String captcha, HttpServletRequest request){
         if (user==null){
             return RespBean.error(RespBeanEnum.SESSION_ERROR);
         }
+        ValueOperations valueOperations = redisTemplate.opsForValue();
         boolean check=orderService.checkCaptcha(user,goodsId,captcha);
         if (!check){
             return RespBean.error(RespBeanEnum.ERROR_CAPTCHA);
@@ -186,11 +197,12 @@ public class SeckillController implements InitializingBean {
         return RespBean.success(orderId);
     }
 
-
-
-
-
-
+    /**
+     * 验证码
+     * @param user
+     * @param goodsId
+     * @param response
+     */
     @RequestMapping("/captcha")
     public void verifyCode(User user, Long goodsId, HttpServletResponse response){
         if(user==null || goodsId<0)
