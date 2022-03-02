@@ -45,8 +45,8 @@
                 <div>
                    <!-- <img id="captchaImg" width="130" height="32" onclick="refreshCaptcha()" style="display: none">-->
                     <input id="captcha" style="display:none">
-                   <!-- <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getSeckillPath()">-->
-                    <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doSeckill()">
+                    <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getSeckillPath()">
+                   <!-- <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doSeckill()">-->
                         立即秒杀
                         <input type="hidden" name="goodsId" id="goodsId"/>
                     </button>
@@ -110,7 +110,7 @@
         $("#captchaImg").attr("src", "/seckill/captcha?goodsId=" + $("#goodsId").val()+"&time="+new Date())
     }
 
-    function doSeckill() {
+  /*  function doSeckill(path) {
         //var goodsId = $("#goodsId").val();
         //var captcha = $("#captcha").val();
         //g_showLoading();
@@ -136,7 +136,7 @@
                 layer.msg("客户端请求有误");
             }
         })
-    }
+    }*/
     function getResult(goodsId) {
         g_showLoading();
         $.ajax({
@@ -173,7 +173,7 @@
         });
     }
 
-    /*function getSeckillPath() {
+    function getSeckillPath() {
         var goodsId = $("#goodsId").val();
         var captcha = $("#captcha").val();
         g_showLoading();
@@ -182,7 +182,7 @@
             type: "GET",
             data: {
                 goodsId: goodsId,
-                captcha: captcha
+                //captcha: captcha
             },
             success: function (data) {
                 if (data.code == 200) {
@@ -196,9 +196,9 @@
                 layer.msg("客户端请求有误");
             }
         })
-    }*/
+    }
 
-    /*function doSeckill(path) {
+    function doSeckill(path) {
         $.ajax({
             url: "/seckill/" + path + "/doSeckill",
             type: "POST",
@@ -219,7 +219,7 @@
                 layer.msg("客户端请求有误");
             }
         });
-    }*/
+    }
 
     function render(detail) {
         var seckillStatus = detail.seckillStatus;

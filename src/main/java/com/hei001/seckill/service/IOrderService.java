@@ -32,4 +32,20 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     Long getResult(User user, Long goodsId);
+
+    /**
+     * 获取秒杀地址
+     * @param user
+     * @param goosId
+     * @return
+     */
+    String createPath(User user, Long goosId);
+
+    /**
+     * 校验秒杀地址
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    boolean checkPath(User user, Long goodsId, String path);
 }
