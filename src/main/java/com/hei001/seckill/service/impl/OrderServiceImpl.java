@@ -19,12 +19,12 @@ import com.hei001.seckill.utils.UUIDUtil;
 import com.hei001.seckill.vo.GoodsVo;
 import com.hei001.seckill.vo.OrderDetailVo;
 import com.hei001.seckill.vo.RespBeanEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.UUID;
@@ -151,6 +151,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         boolean equals = path.equals(redisPath);
         return equals;
 
+    }
+
+    /**
+     * 校验秒杀地址
+     * @param user
+     * @param goodsId
+     * @param captcha
+     * @return
+     */
+    @Override
+    public boolean checkCaptcha(User user, Long goodsId, String captcha) {
+        if(StringUtils.isEmpty(captcha)||user==null||goodsId<0){
+            return false;
+        }
+        String redisCaptcha= (String)redisTemplate.opsForValue().get("captcha:" + user.getId() + ":" + goodsId);
+        return captcha.equals(redisCaptcha);
     }
 
 

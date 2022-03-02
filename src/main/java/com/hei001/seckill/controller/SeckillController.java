@@ -1,6 +1,7 @@
 package com.hei001.seckill.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hei001.seckill.exception.GlobalException;
 import com.hei001.seckill.pojo.Order;
 import com.hei001.seckill.pojo.OrderInfo;
 import com.hei001.seckill.pojo.SeckillMessage;
@@ -13,6 +14,8 @@ import com.hei001.seckill.utils.JsonUtil;
 import com.hei001.seckill.vo.GoodsVo;
 import com.hei001.seckill.vo.RespBean;
 import com.hei001.seckill.vo.RespBeanEnum;
+import com.wf.captcha.ArithmeticCaptcha;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -27,15 +30,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author HEI001
  * @date 2022/3/1 9:11
  */
+@Slf4j
 @Controller
 @RequestMapping("/seckill")
 public class SeckillController implements InitializingBean {
@@ -124,13 +131,19 @@ public class SeckillController implements InitializingBean {
 
     @RequestMapping(value = "/path",method = RequestMethod.GET)
     @ResponseBody
-    public RespBean getPath(User user,Long goodsId){
+    public RespBean getPath(User user,Long goodsId,String captcha){
         if (user==null){
             return RespBean.error(RespBeanEnum.SESSION_ERROR);
+        }
+        boolean check=orderService.checkCaptcha(user,goodsId,captcha);
+        if (!check){
+            return RespBean.error(RespBeanEnum.ERROR_CAPTCHA);
         }
         String str=orderService.createPath(user,goodsId);
         return RespBean.success(str);
     }
+
+
     @RequestMapping(value = "/doSeckill2")
     public String doSeckill2(Model model, User user,Long goodsId){
         if (user==null){
@@ -174,6 +187,26 @@ public class SeckillController implements InitializingBean {
     }
 
 
+
+
+
+
+    @RequestMapping("/captcha")
+    public void verifyCode(User user, Long goodsId, HttpServletResponse response){
+        if(user==null || goodsId<0)
+            throw new GlobalException(RespBeanEnum.REQUEST_ILLEGAL);
+        response.setContentType("image/jpg");
+        response.setHeader("Pragma","No-cache");
+        response.setHeader("Cache-Control","no-cache");
+        response.setDateHeader("Expires",0);
+        ArithmeticCaptcha captcha = new ArithmeticCaptcha(130, 32, 3);
+        redisTemplate.opsForValue().set("captcha:"+user.getId()+":"+goodsId,captcha.text(),300, TimeUnit.SECONDS);
+        try {
+            captcha.out(response.getOutputStream());
+        } catch (IOException e) {
+            log.error("验证码生成失败"+e.getMessage());
+        }
+    }
 
     /**
      * 系统初始化，将商品加载到库存里

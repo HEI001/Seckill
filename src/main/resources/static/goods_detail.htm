@@ -43,12 +43,12 @@
             </td>
             <td>
                 <div>
-                   <!-- <img id="captchaImg" width="130" height="32" onclick="refreshCaptcha()" style="display: none">-->
+                    <img id="captchaImg" width="130" height="32" onclick="refreshCaptcha()" style="display: none">
                     <input id="captcha" style="display:none">
                     <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getSeckillPath()">
-                   <!-- <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doSeckill()">-->
                         立即秒杀
-                        <input type="hidden" name="goodsId" id="goodsId"/>
+                    </button>
+                    <input type="hidden" name="goodsId" id="goodsId"/>
                     </button>
                 </div>
 
@@ -156,7 +156,7 @@
             type: "GET",
             data: {
                 goodsId: goodsId,
-                //captcha: captcha
+                captcha: captcha
             },
             success: function (data) {
                 if (data.code == 200) {
@@ -256,13 +256,13 @@
             }
             $("#seckillTip").html("秒杀进行中");
             refreshCaptcha()
-            //$("#captcha").show()
-            //$("#captchaImg").show()
+            $("#captcha").show()
+            $("#captchaImg").show()
         } else {//秒杀已经结束
             $("#buyButton").attr("disabled", true);
             $("#seckillTip").html("秒杀已经结束");
-            //$("#captcha").hide()
-            //$("#captchaImg").hide()
+            $("#captcha").hide()
+            $("#captchaImg").hide()
         }
     }
 
