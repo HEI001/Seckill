@@ -1,3 +1,4 @@
+/*
 package com.hei001.seckill.config;
 
 import org.springframework.amqp.core.*;
@@ -6,12 +7,14 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 
+*/
 /**
  * headers 模式
  *
  * @author HEI001
  * @date 2022/3/2 10:33
- */
+ *//*
+
 @Configuration
 public class RabbitMQHeadersConfig {
     private static final String QUEUE1 = "queue_headers01";
@@ -49,3 +52,4 @@ public class RabbitMQHeadersConfig {
 
     }
 }
+*/

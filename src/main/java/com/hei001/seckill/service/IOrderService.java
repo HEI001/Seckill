@@ -25,4 +25,11 @@ public interface IOrderService extends IService<Order> {
      */
     OrderInfo seckill(User user, GoodsVo goodsVo);
 
+    /**
+     * 获取秒杀结果
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    Long getResult(User user, Long goodsId);
 }

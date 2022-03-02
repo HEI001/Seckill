@@ -19,27 +19,30 @@ public class MQSender {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public void send(Object msg){
+    /**
+     * 发送秒杀信息
+     * @param msg
+     */
+    public void sendSeckillMessage(Object msg){
+        log.info("发送消息"+msg);
+        rabbitTemplate.convertAndSend("seckillExchange","seckill.message",msg);
+    }
+/*    public void send(Object msg){
         log.info("发送消息"+msg);
         rabbitTemplate.convertAndSend("fanoutExchange","",msg);
     }
-
-
     public void sendDirect01(Object msg){
         log.info("发送消息"+msg);
         rabbitTemplate.convertAndSend("dircetExchange","queue.red",msg);
     }
-
     public void sendDirect02(Object msg){
         log.info("发送消息"+msg);
         rabbitTemplate.convertAndSend("dircetExchange","queue.green",msg);
     }
-
     public void sendTopic01(Object msg){
         log.info("发送消息01接受"+msg);
         rabbitTemplate.convertAndSend("topicExchange","queue.green",msg);
     }
-
     public void sendTopic02(Object msg){
         log.info("发送消息01接受"+msg);
         rabbitTemplate.convertAndSend("topicExchange","queue.red.green",msg);
@@ -48,8 +51,6 @@ public class MQSender {
         log.info("发送消息都接受"+msg);
         rabbitTemplate.convertAndSend("topicExchange","rea.queue.red.green",msg);
     }
-
-
     public void sendHeaders01(String msg){
         log.info("发送消息（两个接受）:"+msg);
         MessageProperties messageProperties=new MessageProperties();
@@ -65,5 +66,5 @@ public class MQSender {
         messageProperties.setHeader("speed","normal");
         Message message=new Message(msg.getBytes(),messageProperties);
         rabbitTemplate.convertAndSend("headersExchange","",message);
-    }
+    }*/
 }

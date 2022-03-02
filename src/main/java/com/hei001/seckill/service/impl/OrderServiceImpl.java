@@ -19,6 +19,7 @@ import com.hei001.seckill.vo.OrderDetailVo;
 import com.hei001.seckill.vo.RespBeanEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +57,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Transactional
     @Override
     public OrderInfo seckill(User user, GoodsVo goodsVo) {
+        ValueOperations valueOperations = redisTemplate.opsForValue();
         //秒杀商品表的库存
         GoodsSeckill goods_Seckill = goodsSeckillService.getOne(new QueryWrapper<GoodsSeckill>().eq("goods_id",
                 goodsVo.getId()));
@@ -64,7 +66,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 goods_Seckill.getStockCount()).eq("id", goods_Seckill.getId()).gt("stock_count", 0));*/
         boolean result = goodsSeckillService.update(new UpdateWrapper<GoodsSeckill>().setSql("stock_count = stock_count-1").eq(
                 "goods_id", goodsVo.getId()).gt("stock_count", 0));
-        if (!result) {
+        if (goods_Seckill.getStockCount()<1) {
+            //判断是否还有库存
+            valueOperations.set("isStockEmpty"+goodsVo.getId(),"0");
             return null;
         }
         //生成订单
@@ -89,6 +93,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //将信息存在redis中
         redisTemplate.opsForValue().set("order:" + user.getId() + ":" + goodsVo.getId(), order);
         return orderInfo;
+    }
+
+    /**
+     * 获取秒杀结果
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @Override
+    public Long getResult(User user, Long goodsId) {
+        Order order = orderMapper.selectOne(new QueryWrapper<Order>().eq("user_id", user.getId()).eq("goods_id",
+                goodsId));
+        if (order!=null){
+            return order.getOrderId();
+        }else if(redisTemplate.hasKey("isStockEmpty:"+goodsId)){
+            return -1L;
+        }else {
+            return 0L;
+        }
+
     }
 
 
