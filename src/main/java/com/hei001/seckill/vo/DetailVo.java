@@ -1,4 +1,4 @@
-package com.hei001.seckill.utils;
+package com.hei001.seckill.vo;
 
 import com.hei001.seckill.pojo.User;
 import com.hei001.seckill.vo.GoodsVo;

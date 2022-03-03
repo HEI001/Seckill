@@ -4,7 +4,7 @@ package com.hei001.seckill.controller;
 import com.hei001.seckill.pojo.User;
 import com.hei001.seckill.service.IGoodsService;
 import com.hei001.seckill.service.IUserService;
-import com.hei001.seckill.utils.DetailVo;
+import com.hei001.seckill.vo.DetailVo;
 import com.hei001.seckill.vo.GoodsVo;
 import com.hei001.seckill.vo.RespBean;
 import org.springframework.beans.factory.annotation.Autowired;

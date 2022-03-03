@@ -61,6 +61,7 @@ public class SeckillController implements InitializingBean {
     private MQSender mqSender;
     @Autowired
     private RedisScript<Long> redisScript;
+    //通过本地标记，减少对Redis的访问
     private Map<Long,Boolean> EmptyStocking=new HashMap<>();
 
     /**
@@ -90,17 +91,15 @@ public class SeckillController implements InitializingBean {
             //model.addAttribute("errmsg",RespBeanEnum.REPEATE_ERROR.getMessage());
             return RespBean.error(RespBeanEnum.REPEATE_ERROR);
         }
-        /**
-         * 通过内存标记减少Redis的访问
-         */
+
+        //通过内存标记减少Redis的访问
         if (EmptyStocking.get(goodsId)){
             return RespBean.error(RespBeanEnum.Empty_STOCK);
         }
 
         //预减库存操作
-       // Long stock = (Long) redisTemplate.execute(redisScript, Collections.singletonList("seckillGoods:" + goodsId), Collections.EMPTY_LIST);
-        //System.out.println(stock);
-        Long stock = valueOperations.decrement("seckillGoods:" + goodsId);
+        Long stock = (Long) redisTemplate.execute(redisScript, Collections.singletonList("seckillGoods:" + goodsId), Collections.EMPTY_LIST);
+        //Long stock = valueOperations.decrement("seckillGoods:" + goodsId);
         if (stock<0){
             EmptyStocking.put(goodsId,true);
             valueOperations.increment("seckillGoods:" + goodsId);
@@ -111,7 +110,7 @@ public class SeckillController implements InitializingBean {
         mqSender.sendSeckillMessage(JsonUtil.object2JsonStr(seckillMessage));
         return RespBean.success(0);
 
-
+        //使用redis预减库存，更换原来直接操作数据库的逻辑
         /*GoodsVo goodsVo = goodsService.finGoodsVoByGoodsId(goodsId);
         if (goodsVo.getStockCount()<1){
             model.addAttribute("errmsg", RespBeanEnum.Empty_STOCK.getMessage());
